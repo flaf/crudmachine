@@ -1,0 +1,13 @@
+---
+server:
+  address: "tls://flhpz4.athome.priv"
+  port: 4222
+  subject: 'toto'
+  queue: 'xxx'
+  token: 'token123456789'
+actions:
+  create: 'sleep 4 && echo create'
+  read: 'sleep 4 && echo read {{ .toto }} {{ .tutu.tata }} && exit 212'
+  update: 'sleep 3 && echo update'
+  delete: 'sleep 2 && echo delete'
+
