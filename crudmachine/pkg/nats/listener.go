@@ -11,6 +11,7 @@ import (
 	"ac-versailles/crudmachine/pkg/exec"
 	"ac-versailles/crudmachine/pkg/config"
 	"github.com/nats-io/nats.go"
+	"github.com/spf13/cast"
 )
 
 func handleMsg(m *nats.Msg, i int, actions config.Actions, ch chan int) {
@@ -29,10 +30,21 @@ func handleMsg(m *nats.Msg, i int, actions config.Actions, ch chan int) {
 		panic(err)
 	}
 
-	action := dat["action"].(string)
+
+	action := cast.ToString(dat["action"])
+	//action := dat["action"]
+	//if action == nil {
+	//	action = ""
+	//} else {
+	//	action = action.(string)
+	//}
 	data := dat["data"]
 
-	//log.Printf("[#%d] Action is: %s", i, action)
+	if data == nil {
+		log.Printf("data is nil")
+	}
+
+	log.Printf("[#%d] Action is: %s", i, action)
 
     cmd := ""
 	switch action {
@@ -45,10 +57,12 @@ func handleMsg(m *nats.Msg, i int, actions config.Actions, ch chan int) {
 		case "delete":
 			cmd = actions.Delete
 		default:
-			log.Fatalf("[#%d] action [%s] not supported", i, action)
+			log.Printf("[#%d] action [%s] not supported", i, action)
+			return
 	}
 
-	tmpl, err := template.New("cmdtpl").Option("missingkey=error").Parse(cmd)
+	//tmpl, err := template.New("cmdtpl").Option("missingkey=error").Parse(cmd)
+	tmpl, err := template.New("cmdtpl").Parse(cmd)
 	if err != nil { panic(err) }
 	var b bytes.Buffer
 	err = tmpl.Execute(&b, data)

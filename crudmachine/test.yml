@@ -1,6 +1,6 @@
 ---
 server:
-  address: "tls://flhpz4.athome.priv"
+  address: "tls://nats.ac-versailles.fr"
   port: 4222
   subject: 'toto'
   queue: 'xxx'
@@ -10,4 +10,5 @@ actions:
   read: 'sleep 4 && echo read {{ .toto }} {{ .tutu.tata }} && exit 212'
   update: 'sleep 3 && echo update'
   delete: 'sleep 2 && echo delete'
+  #readall:
 
